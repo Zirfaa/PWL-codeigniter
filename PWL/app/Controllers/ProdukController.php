@@ -13,14 +13,8 @@ class ProdukController extends BaseController
         $this->produk = new ProductModel();
         }
     public function index(){
-        $data = [
-            'title' => 'produk'
-        ];
-        $products = $this->$produk->findAll();
-        $dataProduk['products'] = $products;
-        echo view("Layout/header",$data);
-        echo view("Layout/sidebar",);
-        echo view("Layout/produk_admin",$dataProduk);
-        echo view("Layout/footer");
+        $product = $this->product->findAll();
+        $data['product'] = $product;
+        return view('produk', $data);
     }
 }

@@ -7,13 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index',['filter' => 'auth']);
 $routes->get('/dashboard', 'Home::dashboard',['filter' => 'auth']);
-$routes->get('produk', 'DasboardController::produk',['filter' => 'auth']);
-$routes->group('produk', ['filter' => 'auth'], function ($routes) { 
-    $routes->get('', 'ProdukController::index');
-    $routes->post('', 'ProdukController::create');
-    $routes->post('edit/(:any)', 'ProdukController::edit/$1');
-    $routes->get('delete/(:any)', 'ProdukController::delete/$1');
-});
+$routes->get('produk', 'ProdukController::produk',['filter' => 'auth']);
 
 $routes->get('login', 'AuthController::login');
 $routes->post('login', 'AuthController::login');
