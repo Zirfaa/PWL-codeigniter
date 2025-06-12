@@ -27,6 +27,12 @@ $segment1 = $uri->getSegment(1);
             <span class="nav-link-text ms-1">products</span>
           </a>
         </li>
+        <li class="nav-item">
+        <a class="nav-link <?= ($segment1 == 'keranjang') ? 'active bg-gradient-dark text-white' : 'text-dark' ?>" href="keranjang">
+            <i class="material-symbols-rounded opacity-5">table_view</i>
+            <span class="nav-link-text ms-1">Cart</span>
+          </a>
+        </li>
         <li class="nav-item mt-3">
           <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Account pages</h6>
         </li>

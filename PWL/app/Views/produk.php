@@ -2,49 +2,148 @@
 
 <?= $this->section('content') ?>
 
-<div class="container-fluid py-2">
-      <div class="row">
-        <div class="col-12">
-          <div class="card my-4">
-            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-              <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
-                <h6 class="text-white text-capitalize ps-3">Products</h6>
-              </div>
-            </div>
-            <div class="card-body px-0 pb-2">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Categories</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">stock</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">price</th>
-                      <th class="text-secondary opacity-7"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <div class="row">
-    <?php foreach ($product as $key => $item) : ?>
-        <div class="col-lg-6">
-            <div class="card">
-                <div class="card-body">
-                    <img src="<?php echo base_url() . "img/" . $item['foto'] ?>" alt="..." width="100%">
-                    <h5 class="card-title"><?php echo $item['nama'] ?><br><?php echo $item['harga'] ?></h5>
+<?php
+if (session()->getFlashData('success')) {
+?>
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <?= session()->getFlashData('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php
+}
+?>
+<?php
+if (session()->getFlashData('failed')) {
+?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= session()->getFlashData('failed') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php
+}
+?>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+    Tambah Data
+</button>
+<button type="button" class="btn btn-success" onclick="window.location.href='<?= base_url() ?>produk/download'">
+    Download
+</button>
+<!-- Table with stripped rows -->
+<table class="table datatable">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nama</th>
+            <th scope="col">Harga</th>
+            <th scope="col">Jumlah</th>
+            <th scope="col">Foto</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($product as $index => $produk) : ?>
+            <tr>
+                <th scope="row"><?php echo $index + 1 ?></th>
+                <td><?php echo $produk['nama'] ?></td>
+                <td><?php echo $produk['harga'] ?></td>
+                <td><?php echo $produk['jumlah'] ?></td>
+                <td>
+                    <?php if ($produk['foto'] != '' and file_exists("img/" . $produk['foto'] . "")) : ?>
+                        <img src="<?php echo base_url() . "img/" . $produk['foto'] ?>" width="100px">
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editModal-<?= $produk['id'] ?>">
+                        Ubah
+                    </button>
+                    <a href="<?= base_url('produk/delete/' . $produk['id']) ?>" class="btn btn-danger" onclick="return confirm('Yakin hapus data ini ?')">
+                        Hapus
+                    </a>
+                </td>
+            </tr>
+        <?php endforeach ?>
+        <!-- Edit Modal Begin -->
+        <div class="modal fade" id="editModal-<?= $produk['id'] ?>" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Data</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="<?= base_url('produk/edit/' . $produk['id']) ?>" method="post" enctype="multipart/form-data">
+                        <?= csrf_field(); ?>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="name">Nama</label>
+                                <input type="text" name="nama" class="form-control" id="nama" value="<?= $produk['nama'] ?>" placeholder="Nama Barang" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Harga</label>
+                                <input type="text" name="harga" class="form-control" id="harga" value="<?= $produk['harga'] ?>" placeholder="Harga Barang" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Jumlah</label>
+                                <input type="text" name="jumlah" class="form-control" id="jumlah" value="<?= $produk['jumlah'] ?>" placeholder="Jumlah Barang" required>
+                            </div>
+                            <img src="<?php echo base_url() . "img/" . $produk['foto'] ?>" width="100px">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="check" name="check" value="1">
+                                <label class="form-check-label" for="check">
+                                    Ceklis jika ingin mengganti foto
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Foto</label>
+                                <input type="file" class="form-control" id="foto" name="foto">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    <?php endforeach ?>
-</div>
-</tbody>
-
-
-                  </tbody>
-                </table>
-              </div>
+        <!-- Edit Modal End -->
+    </tbody>
+</table>
+<!-- End Table with stripped rows -->
+<!-- Add Modal Begin -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-          </div>
+            <form action="<?= base_url('produk') ?>" method="post" enctype="multipart/form-data">
+                <?= csrf_field(); ?>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name">Nama</label>
+                        <input type="text" name="nama" class="form-control" id="nama" placeholder="Nama Barang" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Harga</label>
+                        <input type="text" name="harga" class="form-control" id="harga" placeholder="Harga Barang" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Jumlah</label>
+                        <input type="text" name="jumlah" class="form-control" id="jumlah" placeholder="Jumlah Barang" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Foto</label>
+                        <input type="file" class="form-control" id="foto" name="foto">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
         </div>
-      </div>
     </div>
+</div>
+<!-- Add Modal End -->
 <?= $this->endSection() ?>
